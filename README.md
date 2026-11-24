@@ -1,29 +1,31 @@
+# Natural English 0.3.0 — Performance & Productivity
 
-## Cloud Edition v0.2.0
-Đọc [DEPLOY-CLOUDFLARE.md](DEPLOY-CLOUDFLARE.md) trước: hướng dẫn GitHub, Cloudflare và Extension online. Hướng dẫn cổng 8787/OpenAI local của v0.1 bên dưới không còn áp dụng cho Extension.
-# Natural English 0.1.0 — MVP
+Dịch Việt–Anh/Anh–Việt, viết lại, gợi ý trả lời; Web/PWA + Chrome Extension Manifest V3. BYOK: mỗi người dùng tự cung cấp key, không dùng key chung. Website chạy Cloudflare Workers, không cần máy cá nhân bật Node.js.
 
-Web/PWA + Chrome Extension, giao diện dùng chung, Node.js thuần và JavaScript ES modules. Không cần npm install, không cần database, không có API key mặc định. Đây là MVP tự chạy, không phải bản production đã kiểm toán bảo mật.
+- Website hiện tại: https://natural-english-app.hacmazmark-123.workers.dev
+- Repo: https://github.com/Shan-Sama/natural-english-app
+- Cập nhật: [UPDATE-v0.3.0.md](UPDATE-v0.3.0.md)
+- Triển khai: [DEPLOY-CLOUDFLARE.md](DEPLOY-CLOUDFLARE.md)
 
-## Windows / macOS / Linux
-1. Cài Node.js 22+ từ https://nodejs.org/.
-2. Giải nén source, mở Terminal/PowerShell tại thư mục chứa package.json.
-3. `npm start` rồi truy cập http://127.0.0.1:8787. Không mở index.html bằng file://.
-4. Vào Cài đặt. Demo được bật mặc định và chỉ hiển thị một câu mẫu cố định. Để dịch thật, chọn provider/model, nhập key, bỏ chọn Demo, lưu và kiểm tra API. Ctrl+Enter để dịch.
+## Sử dụng
+1. Cài đặt → chọn Google Gemini, model `gemini-flash-lite-latest` (alias có thể đổi), nhập key cá nhân, bỏ chọn Demo, Lưu cài đặt. Tải model Gemini để lấy các tên model hỗ trợ generateContent; danh sách không bảo đảm hạn mức hay model hỗ trợ dịch. Kiểm tra API dùng một yêu cầu văn bản nhỏ, không tạo bản dịch nhiều phong cách.
+2. Dịch AI → Nhanh (mặc định, 3 văn phong) / Thông minh (5) / Học sâu (10) / Tùy chọn. Chế độ Nhanh chỉ yêu cầu bản dịch. Chế độ khác giới hạn số ví dụ và giải thích. Chọn ngữ cảnh/tác vụ nếu cần. Ctrl+Enter để dịch.
+3. Sau khi AI trả lời, xem thống kê input, output, thinking, total từ metadata nhà cung cấp; dấu — là không có dữ liệu. Thinking có thể đã nằm trong output hoặc total tùy provider; không cộng tay. Nếu retry, số liệu chỉ là lượt thành công. Cache trong bộ nhớ của trang đang mở tối đa 40 kết quả, chỉ dùng lại khi nội dung và cấu hình trùng khớp; không gọi AI mới khi trúng cache. Cache mất khi reload/đóng popup hoặc lưu cấu hình, xóa key. Không dùng tự động model dự phòng. Retry 503 một lần là tùy chọn, mặc định tắt.
+4. Nút Copy / Nghe, lịch sử và sổ tay/flashcards giữ chức năng cũ. Chế độ Demo dùng nội dung minh họa cố định, không dịch nội dung thật. Không tự động gửi tin nhắn.
 
-## Chrome Extension
-Giải nén ZIP extension vào thư mục cố định. Chrome → chrome://extensions/ → Developer mode → Load unpacked → chọn thư mục chứa manifest.json. Ghim tiện ích. Popup khi click; Alt+Shift+T để mở Side Panel (có thể sửa tại chrome://extensions/shortcuts); bôi đen chữ → chuột phải → Natural English – Dịch văn bản đã chọn. Sau đó bấm Dịch AI để chủ động gửi nội dung. Dùng Chrome phiên bản hiện đại hỗ trợ sidePanel.open. Khi thay source chạy `npm run build` rồi Reload extension. Extension Gemini/Ollama không cần web server; OpenAI cần `npm start` trên máy cá nhân ở cổng 8787. Không tự động gửi tin nhắn.
+## Extension
+`npm.cmd run build` đồng bộ UI từ `web/` sang `extension/`, sinh `popup.html` (560 x 570 CSS px theo thiết kế) và `sidepanel.html` (responsive). Chrome → chrome://extensions/ → Developer mode → Load unpacked → chọn **extension**. Nếu đã cài từ thư mục này, chỉ nhấn Reload. Nếu đang cài từ ZIP riêng, cập nhật vào chính thư mục đó rồi Reload để giữ ID và dữ liệu; không cần cài thêm bản trùng. Popup có nút Thanh bên, hoặc `Alt+Shift+T` (xem phím tắt tại chrome://extensions/shortcuts). Chọn đoạn văn → chuột phải → Natural English để đưa đoạn văn vào Side Panel, sau đó chủ động bấm Dịch. Gemini gọi trực tiếp; OpenAI gọi backend HTTPS đã thiết lập, cần cấp quyền host. Ollama chỉ dùng trên máy có Ollama chạy local. Không cần Node khi sử dụng Extension.
 
-## API cá nhân (BYOK)
-- Gemini: https://aistudio.google.com/app/apikey → đăng nhập → tạo key theo hướng dẫn của Google. Chọn Gemini, nhập model ID được tài khoản hỗ trợ (giá trị mặc định chỉ là ví dụ), dán key. Kiểm tra quota, điều khoản, thanh toán và khu vực tại trang quản lý của Google.
-- OpenAI: https://platform.openai.com/api-keys → tạo key riêng cho project; kiểm tra billing và giới hạn chi tiêu tại https://platform.openai.com/. ChatGPT Plus không bao gồm API credit. Chọn OpenAI, điền model hỗ trợ Chat Completions JSON mode. Web gửi key tới relay cùng origin; Extension dùng relay local, không gọi OpenAI trực tiếp. Relay không lưu key, nhưng có thể đọc key trong lúc xử lý. Không dùng relay không đáng tin.
-- Ollama: https://ollama.com/ → cài đặt → `ollama pull qwen3:8b` (ví dụ, chọn model phù hợp RAM) → đảm bảo Ollama đang chạy tại 127.0.0.1:11434. Chọn Ollama, model đúng tên đã pull, bỏ trống key. Nếu bị chặn origin từ extension, kiểm tra cấu hình Ollama; không mở CORS toàn bộ hoặc expose cổng Internet. Web chỉ bật Ollama khi server bind localhost. Model và phiên bản API thực tế có thể thay đổi.
+## API cá nhân
+- Gemini: https://aistudio.google.com/app/apikey; sử dụng model được cấp quyền và kiểm tra quota. Alias có thể đổi theo nhà cung cấp. Một số model Flash-Lite cụ thể dùng thinking tối thiểu; alias không ép tham số thinking để tránh lỗi tương thích. Giới hạn đầu ra theo độ dài và số văn phong, tối đa 16000 token cấu hình. Nếu chạm giới hạn, chia đoạn hoặc giảm văn phong; không tự gọi tiếp.
+- OpenAI: https://platform.openai.com/api-keys; dùng model hỗ trợ Chat Completions JSON mode và max_completion_tokens (ví dụ gpt-4.1-mini, tùy quyền tài khoản). API tính phí riêng với ChatGPT. Extension cần backend Cloudflare (URL mặc định trên bản này, có thể đổi). Web online không chạy Ollama.
+- Ollama: https://ollama.com/; chỉ local. Không mở cổng ra Internet.
 
-## Chia sẻ cho người khác
-Gửi ZIP extension/source; không gửi API key. Mỗi người tự lấy key và tự cấu hình trên thiết bị. Lịch sử/từ vựng/cấu hình lưu localStorage của từng ứng dụng, không đồng bộ web-extension; mặc định lịch sử bật, có thể tắt và xóa. Key web chỉ giữ trong bộ nhớ trang đến khi reload; extension giữ chrome.storage.session trong phiên trình duyệt. Đây không phải kho bí mật mã hóa; người có quyền kiểm soát trình duyệt hoặc mã độc vẫn có thể lấy key. Chỉ dùng key riêng có quota thấp, thu hồi khi cần. Không gửi nội dung nhạy cảm nếu chưa hiểu chính sách dữ liệu của provider.
+## Quyền riêng tư và chi phí
+Key web chỉ giữ trong bộ nhớ tab; Extension dùng chrome.storage.session đến khi phiên trình duyệt kết thúc, có thể phải nhập lại sau Reload hoặc restart. Không lưu key vĩnh viễn, không đưa key vào lịch sử/cache hoặc commit. Web và Extension OpenAI gửi key/nội dung qua máy chủ trung gian; chỉ sử dụng máy chủ tin cậy. Backend không chủ động lưu/log request, không trả nguyên lỗi provider. Rate limit IP không thay thế xác thực/chống bot. Khi chia sẻ công khai nên bổ sung kiểm soát truy cập, rà soát bảo mật và chính sách riêng tư. Lịch sử, sổ tay lưu trên từng thiết bị, không đồng bộ giữa Web/Extension. Có thể tắt lưu lịch sử và xóa dữ liệu trong ứng dụng. Không nhập dữ liệu nhạy cảm nếu không tin cậy provider/host. Hosting và AI có hạn mức riêng; không hứa miễn phí không giới hạn.
 
-## Web online / PWA
-Khuyến nghị người khác tự chạy bản local để tránh phải tin tưởng máy chủ của bạn. Nếu host riêng, dùng dịch vụ hỗ trợ Node.js 22, start command `npm start`, đặt HOST=0.0.0.0 và PORT theo nhà cung cấp. Đặt HTTPS reverse proxy và xác thực người dùng (ví dụ access gateway) trước khi đưa lên Internet. Bản này chỉ có rate limit đơn giản, không có auth production, không log body nhưng cần tắt body logging trên proxy/hosting. Không công khai relay không xác thực. Người dùng nhập key qua HTTPS, máy chủ có khả năng nhìn thấy key; thông báo rõ. Không có key của chủ app trong môi trường. Đảm bảo Host header được giữ khi reverse proxy. PWA có thể cài từ trình duyệt hỗ trợ (iPhone Safari → Add to Home Screen) khi web chạy qua HTTPS; AI cloud vẫn cần mạng. Không thể chỉ host HTML trên GitHub Pages vì cần relay Node. Extension OpenAI vẫn dùng relay local, không tự chuyển tới web công khai. Không dùng API key trong manifest hoặc commit source.
+## Phát triển
+Node.js 22+; `npm.cmd test`, `npm.cmd run build`, `npm.cmd start` (local tại http://127.0.0.1:8787). Hai lệnh test/build không cần npm install. Nếu cần Wrangler CLI local, npm install rồi npm run dev:cloud hoặc npm run deploy. Deploy thông thường qua GitHub → Cloudflare. Không đưa node_modules hay .env vào Git.
 
-## Phát triển, kiểm tra
-`npm test` chạy unit test và mock provider; `npm run build` sao chép UI dùng chung vào extension. Chưa kiểm thử thực tế trên Chrome/iOS hoặc gọi AI thật (không có credential). Model mặc định là ví dụ có thể cần đổi. Sổ tay/flashcard cơ bản, phát âm phụ thuộc trình duyệt. Không có cache kết quả AI, retry tự động, login, sync hay publish Web Store. Tích hợp Chrome Web Store cần developer account, chính sách privacy và review; đóng gói thư mục extension. Không tự động gửi nội dung lựa chọn tới provider trước khi bấm dịch.
+## Kiểm thử v0.3.0
+17/17 Node tests pass, provider/Worker bindings giả lập; kiểm tra cú pháp và build Extension thành công. Browser end-to-end chưa xác nhận vì môi trường kiểm thử chặn truy cập localhost (ERR_BLOCKED_BY_ADMINISTRATOR); chưa gọi AI bằng key thật, chưa deploy lên Cloudflare, chưa kiểm thử popup Chrome trên máy người dùng. Kiểm tra thực tế theo UPDATE-v0.3.0.md.

@@ -1,4 +1,4 @@
-import {requestAI,validate} from '../web/engine.js';
+import {requestAI,validate,validateConnection,testAI,listModels,AIError} from '../web/engine.js';
 const MAX=100000;
 const extensionOrigin=/^chrome-extension:\/\/[a-p]{32}$/;
 async function readBody(req){
@@ -15,11 +15,11 @@ export default {async fetch(req,env){
  const json=(status,data)=>new Response(JSON.stringify(data),{status,headers});
  if(!accepted)return json(403,{error:'Origin không hợp lệ.'});
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:{...headers,'Access-Control-Allow-Methods':'POST, GET, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Access-Control-Max-Age':'600'}});
- if(url.pathname==='/api/health'&&req.method==='GET')return json(200,{ok:true,version:'0.2.0'});
- if(url.pathname!=='/api/translate')return json(404,{error:'Không tìm thấy API.'});
+ if(url.pathname==='/api/health'&&req.method==='GET')return json(200,{ok:true,version:'0.3.0'});
+ if(!['/api/translate','/api/test','/api/models'].includes(url.pathname))return json(404,{error:'Không tìm thấy API.'});
  if(req.method!=='POST')return json(405,{error:'Chỉ hỗ trợ POST.'});
  if(!/^application\/json(?:;|$)/i.test(req.headers.get('Content-Type')||''))return json(415,{error:'Cần JSON.'});
  try{const {success}=await env.TRANSLATE_LIMIT.limit({key:req.headers.get('CF-Connecting-IP')||'unknown'});if(!success)return json(429,{error:'Quá nhiều yêu cầu. Thử lại sau.'});}catch{return json(503,{error:'Bộ giới hạn yêu cầu chưa sẵn sàng.'});}
- let p;try{p=await readBody(req);if(!['gemini','openai'].includes(p?.provider))return json(400,{error:'Cloud chỉ hỗ trợ Gemini và OpenAI.'});validate(p);if(!/^[\w.-]+$/.test(p.model))throw new Error('model');}catch(e){return json(e instanceof RangeError?413:400,{error:'Dữ liệu không hợp lệ hoặc thiếu API key.'});}
- try{return json(200,await requestAI(p));}catch(e){const message=String(e?.message||'');return json(502,{error:/^AI trả về HTTP \d{3}\./.test(message)?message:'Không thể nhận kết quả AI. Kiểm tra model, key và thử lại.'});}
+ let p;try{p=await readBody(req);if(!['gemini','openai'].includes(p?.provider))return json(400,{error:'Cloud chỉ hỗ trợ Gemini và OpenAI.'});if(url.pathname==='/api/translate')validate(p);else if(url.pathname==='/api/models')validateConnection({...p,model:'list'});else validateConnection(p);}catch(e){return json(e instanceof RangeError?413:400,{error:'Dữ liệu không hợp lệ hoặc thiếu API key.'});}
+ try{return json(200,await (url.pathname==='/api/models'?listModels(p):url.pathname==='/api/test'?testAI(p):requestAI(p)));}catch(e){return json(e instanceof AIError?e.status:502,{error:e instanceof AIError?e.message:'Không thể xử lý kết quả AI.',code:e instanceof AIError?e.code:'INTERNAL'});}
 }};

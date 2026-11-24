@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Natural English \u2013 AI Translator",
-  "version": "0.2.0",
-  "description": "D\u1ecbch AI \u0111a v\u0103n phong v\u00e0 h\u1ecdc ti\u1ebfng Anh, d\u00f9ng API c\u00e1 nh\u00e2n.",
+  "name": "Natural English – AI Translator",
+  "version": "0.3.0",
+  "description": "Dịch AI đa văn phong và học tiếng Anh, dùng API cá nhân.",
   "permissions": [
     "storage",
     "sidePanel",
@@ -16,11 +16,11 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "index.html",
+    "default_popup": "popup.html",
     "default_icon": "icon192.png"
   },
   "side_panel": {
-    "default_path": "index.html"
+    "default_path": "sidepanel.html"
   },
   "icons": {
     "128": "icon192.png"
@@ -30,7 +30,7 @@
       "suggested_key": {
         "default": "Alt+Shift+T"
       },
-      "description": "M\u1edf Natural English Side Panel"
+      "description": "Mở Natural English Side Panel"
     }
   },
   "optional_host_permissions": [
