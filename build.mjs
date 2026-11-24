@@ -1,0 +1,1 @@
+import {copyFile} from 'node:fs/promises';for(const file of ['index.html','app.js','engine.js','style.css','icon192.png','icon512.png','manifest.webmanifest'])await copyFile(new URL('./web/'+file,import.meta.url),new URL('./extension/'+file,import.meta.url));console.log('Extension assets updated.');
