@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Natural English – AI Translator",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Dịch AI đa văn phong và học tiếng Anh, dùng API cá nhân.",
   "permissions": [
     "storage",
@@ -13,7 +13,8 @@
     "http://127.0.0.1:11434/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "action": {
     "default_popup": "popup.html",
@@ -35,5 +36,15 @@
   },
   "optional_host_permissions": [
     "https://*.workers.dev/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://natural-english-app.hacmazmark-123.workers.dev/*"
+      ],
+      "js": [
+        "sync.js"
+      ]
+    }
   ]
 }

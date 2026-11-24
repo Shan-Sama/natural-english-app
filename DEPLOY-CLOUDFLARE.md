@@ -1,3 +1,5 @@
+> Cập nhật v0.3.1: dùng cùng Worker/Repo. Xem UPDATE-v0.3.1.md. API health mới trả version 0.3.1.
+
 # Natural English 0.3.0 — triển khai Cloudflare
 
 Repository đích: https://github.com/Shan-Sama/natural-english-app.git

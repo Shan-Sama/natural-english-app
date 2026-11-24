@@ -1,11 +1,11 @@
 {
   "name": "natural-english",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test tests.mjs cloud.test.mjs",
+    "test": "node --test tests.mjs cloud.test.mjs review.test.mjs background.test.mjs",
     "build": "node build.mjs",
     "deploy": "wrangler deploy",
     "dev:cloud": "wrangler dev"

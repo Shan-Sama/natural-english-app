@@ -1,3 +1,7 @@
+# Cập nhật v0.3.1
+
+Xem [UPDATE-v0.3.1.md](UPDATE-v0.3.1.md) cho hướng dẫn Git, phiên làm việc, đồng bộ cài đặt, Flashcard và xuất/nhập từ vựng. Nội dung v0.3.0 bên dưới vẫn mô tả nền tảng cũ; ưu tiên hướng dẫn v0.3.1 nếu có khác biệt.
+
 # Natural English 0.3.0 — Performance & Productivity
 
 Dịch Việt–Anh/Anh–Việt, viết lại, gợi ý trả lời; Web/PWA + Chrome Extension Manifest V3. BYOK: mỗi người dùng tự cung cấp key, không dùng key chung. Website chạy Cloudflare Workers, không cần máy cá nhân bật Node.js.

@@ -15,7 +15,7 @@ export default {async fetch(req,env){
  const json=(status,data)=>new Response(JSON.stringify(data),{status,headers});
  if(!accepted)return json(403,{error:'Origin không hợp lệ.'});
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:{...headers,'Access-Control-Allow-Methods':'POST, GET, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Access-Control-Max-Age':'600'}});
- if(url.pathname==='/api/health'&&req.method==='GET')return json(200,{ok:true,version:'0.3.0'});
+ if(url.pathname==='/api/health'&&req.method==='GET')return json(200,{ok:true,version:'0.3.1'});
  if(!['/api/translate','/api/test','/api/models'].includes(url.pathname))return json(404,{error:'Không tìm thấy API.'});
  if(req.method!=='POST')return json(405,{error:'Chỉ hỗ trợ POST.'});
  if(!/^application\/json(?:;|$)/i.test(req.headers.get('Content-Type')||''))return json(415,{error:'Cần JSON.'});
